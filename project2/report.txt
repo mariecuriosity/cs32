@@ -1,0 +1,172 @@
+DESCRIPTION:
+
+My doubly-linked list design initializes the Sequence with a Node pointing to nullptr (I did not use a dummy node), with m_next and m_prev both pointing to the m_head (nullptr). It is a circularily linked list, with the first Node being represented as m_head. Each Node contains a value (m_data), and, since it's a doubly linked list, has pointers to the next and previous Nodes (m_next and m_previous, respectively). The Node class is declared within the Sequence private variables, though it does not contain a destructor, since that work is implemented within the Sequence destructor (~Sequence()). When I use the erase function, if there is only one Node left, it will be set to nullptr, instead of being deleted.
+
+PSEUDOCODE:
+private:
+void Sequence::insertAtHead(const ItemType& value)
+	//initialize a new Node with m_data = value
+	if (m_head != nullptr)
+		//set the new Node's next as the old head, and its previous as the tail
+		//set the tail's next as the new Node
+		//set the old head's previous to the new Node
+	//set the new Node the new head
+
+void Sequence::insertAtTail(const ItemType& value)
+	//initialize a new Node with m_data = value
+	//set the new Node's previous to the old tail
+	//set the old tail's next to the new Node
+	//set the new Node's next to the head, and the head's previous to the new Node
+
+void Sequence::insertAtPos(const int pos, const ItemType& value)
+	//initialize the leftPtr (the pointer directly left of the position the new Node will be inserted into
+	//initialize the rightPtr to the head
+	for (int i = 0; i < pos; ++i)
+		//increment through the Sequence until reaches the position to insert. leftPtr is the Node at pos-1 and rightPtr is the Node at pos
+	//initialize a new Node with m_data = value
+	//set the leftPtr's next to the new Node, and the new Node's previous to the leftPtr
+	//set the new Node's next to rightPtr, and rightPtr's previous to the new Node
+
+public: 
+Sequence::Sequence()//trivial
+
+Sequence::~Sequence() //trivial. uses erase function until size is zero
+
+Sequence::Sequence(Sequence& oldPtr) //trivial. increments along the other sequence and inserts new Nodes to copy
+
+Sequence Sequence::operator=(const Sequence& rhs) //trivial. checks if this doesn't point to the same location as &rhs, calls destructor, then copies over rhs to this
+
+bool Sequence::empty() const //trivial. returns true if the length is zero
+
+bool Sequence::insert(const int pos, const ItemType&value) //trivial
+
+bool Sequence::insert(const ItemType& value)
+	if (m_head == nullptr)
+		//inserts at head if Sequence is empty
+	//initializes a new Node with m_data = value
+	for (Node* p = m_head; p->m_data < value && pos < size(); p=p->m_next)
+		//find the smallest position in which the Node data is equal to or larger than the value
+	if (pos == 0)
+		insertAtHead(value);
+	else if (pos == size())
+		insertAtTail(value);
+	else
+		insertAtPos(pos, value);
+	//increase length by 1 and return true
+
+bool Sequence::erase(int pos)
+	if (m_head == nullptr || pos > size() -1 )
+		return false;
+	else if (size() == 1)
+		delete m_head;
+		m_head = nullptr;
+	else
+		while (i < pos)
+			//increments Nodes until reaches the position of the Node to delete
+		//switches the links so next and previous exclude the Node to be deleted
+		if (i == 0)
+			m_head = temp->m_next;
+		else
+			delete kill;
+	//decreases length by one and returns true
+
+int Sequence::remove(const ItemType& value)
+	for (Node* p = m_head->m_prev; i >= 0; --i)
+		//starts from the tail and looks for items to remove	
+		if (p->m_data == value)
+			//removes it at the position in which the data equals value, and increases the error counter value by one
+		else
+			p = p->m_prev;
+	//returns the number of stuff removed
+
+bool Sequence::get(int pos, ItemType& value) const //trivial. increments through the Sequence until it reaches a certain position and sets the ItemType& to that value
+
+bool Sequence::set(int pos, const ItemType& value) //trivial. increments through the Sequence until it reaches a certain position and sets Node data to value
+
+int Sequence::find(const ItemType& value) const //trivial. increments through the Sequence until it reaches the first occurrance of the value and returns the position (-1 if not found)
+
+void Sequence::swap(Sequence& other) //trivial. used the copy constructor and assignment operator
+
+int subsequence(const Sequence& seq1, const Sequence& seq2)
+	//finds the value of the first element in the 2nd sequence, and sees if it can even be found in the 1st sequence
+	if (pos == -1 || seq1.size() < seq2.size())
+		//if the first element is not found or the 1st sequence is smaller than the 2nd, returns -1
+	else
+		for (int i = pos; i <= seq1.size() - seq2.size(); ++i)
+			//increments through 1st first sequence to find a match with the first element of the 2nd sequence
+			if (first == s1_val)
+				//increments through the 2nd sequence to see if all positions match and returns the first position of the subsequence in the 1st sequence
+		return -1; // otherwise return -1
+
+void interleave(const Sequence& seq1, const Sequence& seq2, Sequence& result)
+	//cleans result to a Sequence with length 0
+	//declares and initializes max_size as the length of the larger sequence
+	for (int i = 0; i < max_size; ++i)
+		if (i < s1_size)
+			//inserts an element from the 1st sequence to the end of the resulting sequence
+		if (i < s2_size)
+			//inserts an element from the 1st sequence to the end of the resulting sequence
+
+TEST CASES:
+#include "Sequence.h"
+#include <string>
+#include <iostream>
+#include <cassert>
+using namespace std;
+#define CHECKTYPE(f, t) { auto p = (t)(f); (void)p; }
+void test()
+{
+	Sequence s;
+	assert(s.insert(0, 10)); //tests insert function
+	assert(s.insert(0, 20));
+	assert(s.size() == 2); //tests size function/m_len counting correctly
+	ItemType x = 999;
+	ItemType y = 999;
+	assert(s.get(0, x) && x == 20); //tests get function
+	assert(s.get(1, x) && x == 10);
+	Sequence t = s; //tests copy constructor
+	assert(s.size() == t.size()); //checks copy constructor
+	assert(s.get(0, x) == t.get(0, x));
+	assert(s.get(1, x) == t.get(1, x));
+	Sequence r;
+	assert(r.insert(0, 55));
+	assert(r.insert(0, 77));
+	assert(r.insert(0, 99));
+	assert(r.insert(0, 111));
+	r.swap(s);
+	assert(r.size() == t.size());  //checks swap function (size, first and last element)
+	assert(r.get(0, x) && t.get(0, y) && x==y);
+	assert(r.get(r.size() - 1, x) && t.get(r.size() - 1, y) && x==y);
+	assert(r.erase(0) && r.get(0,x) && t.get(1,y) && x==y); //checks erase function
+	assert(s.find(111)==0); //checks find function
+	assert(r.find(88) < 0); //checks if can recognize an element not being found
+	assert(r.insert(0));
+	assert(r.insert(4));
+	assert(r.insert(8));
+	assert(r.insert(8));
+	assert(r.remove(8) > 0 && r.find(8) < 0); //checks remove and find functions
+	assert(r.set(2,4) && r.get(2,x) && x==4); //checks set function
+	assert(!s.empty()); //checks empty function
+	Sequence a;
+	Sequence b;
+	assert(a.insert(0, 32) && a.insert(0, 8) && a.insert(0, 29) && a.insert(0, 17) && a.insert(0, 63));
+	assert(b.insert(0, 8) && b.insert(0, 29));
+	assert(subsequence(a, b) == 2); //checks subsequence
+	Sequence c;
+	assert(c.insert(0) && c.insert(1)); //make sure interleave works even if result has something to begin with
+	interleave(a, b, c); following lines check interleave function
+	assert(c.size() == (a.size() + b.size());
+	assert(a.get(0, x) && c.get(0, y) && x == y);
+	assert(b.get(0, x) && c.get(1, y) && x == y);
+	assert(a.get(1, x) && c.get(2, y) && x == y);
+	assert(b.get(1, x) && c.get(3, y) && x == y);
+	assert(a.get(2, x) && c.get(4, y) && x == y);
+	assert(a.get(3, x) && c.get(5, y) && x == y);
+	assert(a.get(4, x) && c.get(6, y) && x == y);
+}
+
+int main()
+{
+	test();
+	cout << "Passed all tests" << endl;
+}
